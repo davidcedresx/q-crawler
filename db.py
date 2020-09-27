@@ -1,4 +1,4 @@
 from tinydb import TinyDB, Query
 
-db = TinyDB("ethereal.json")
+db = TinyDB("db.json")
 Link = Query()
