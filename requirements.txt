@@ -2,3 +2,4 @@ aiohttp==3.6.2
 aiohttp-cors==0.7.0
 black==20.8b1
 tinydb==4.1.1
+beautifulsoup4==4.9.2

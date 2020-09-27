@@ -1,8 +1,13 @@
 import asyncio
 import sys
 import aiohttp
+import logging
 from aiohttp import ClientSession
 from db import db, Link
+from bs4 import BeautifulSoup
+
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 
 async def fetch_html(url: str, session: ClientSession, **kwargs) -> str:
@@ -15,15 +20,20 @@ async def fetch_html(url: str, session: ClientSession, **kwargs) -> str:
 async def parse(url: str, session: ClientSession, **kwargs) -> None:
     try:
         html = await fetch_html(url=url, session=session, **kwargs)
+        soup = BeautifulSoup(html)
+        body = soup.get_text()
+
     except (
         aiohttp.ClientError,
         aiohttp.http_exceptions.HttpProcessingError,
         Exception,
     ) as e:
+        logging.warning(e)
+        print(e)
         db.update({"error": str(e)}, Link.value == url)
         return None
     else:
-        return html
+        return body
 
 
 async def crawl_one(url: str, **kwargs) -> None:
